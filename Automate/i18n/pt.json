@@ -1,4 +1,4 @@
-﻿{
+{
     /*********
     ** Generic Mod Config Menu UI
     *********/
@@ -19,7 +19,7 @@
     "config.title.connectors": "Habilitar Conectores",
     "config.connector.desc": "Se {{itemName}} interligam máquinas e baús .",
     "config.custom-connectors.name": "Conectores Customizados",
-    "config.custom-connectors.desc": "Os nomes em inlgês de conectores que juntarão baús e máquinas. Você pode listar vários usando vírgulas. (Precisa ser em inglês).", // note: connector names must be English even when playing in other languages
+    "config.custom-connectors.desc": "Os nomes em inglês de conectores que juntarão baús e máquinas. Você pode listar vários usando vírgulas. (Precisa ser em inglês).", // note: connector names must be English even when playing in other languages
 
     // Junimo hut options
     "config.title.junimo-huts": "Comportamento das cabanas de Junimo",
@@ -37,14 +37,13 @@
     "config.junimo-huts.move-into-huts": "Mover dos baús para as cabanas de Junimo",
 
     // per-chest settings
-    // TODO
-    "config.title.chest-settings": "Chest settings",
-    "config.default-chest-override.name": "Default behavior",
-    "config.default-chest-override.desc": "Whether chests should be enabled or disabled by default (except those you set below). Enabled chests will automate connected machines, while disabled ones are ignored entirely.",
-    "config.chest-override.desc": "Whether placed {{chestName}} items should be enabled as chests. See the tooltip on '{{defaultBehaviorField}}'.",
-    "config.chest-override.values.default": "Default",
-    "config.chest-override.values.enabled": "Enable",
-    "config.chest-override.values.disabled": "Disable",
+    "config.title.chest-settings": "Opções de baú",
+    "config.default-chest-override.name": "Comportamento padrão",
+    "config.default-chest-override.desc": "Se os baús devem estar habilitados ou desabilitados por padrão (exceto os escolhidos abaixo). Baús habilitados automaticamente serão conectados às maquinas, e os desabilitados serão ignorados.",
+    "config.chest-override.desc": "Se os items de {{chestName}} devem ser habilitados como baús. Veja a dica em '{{defaultBehaviorField}}'.",
+    "config.chest-override.values.default": "Padrão",
+    "config.chest-override.values.enabled": "Habilitado",
+    "config.chest-override.values.disabled": "Desabilitado",
 
     // per-machine settings
     "config.title.machine-settings": "Configurações de {{machineName}}",
