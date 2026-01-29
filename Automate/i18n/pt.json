@@ -19,9 +19,7 @@
     "config.title.connectors": "Habilitar Conectores",
     "config.connector.desc": "Define se {{itemName}} conecta máquinas e baús .",
     "config.custom-connectors.name": "Conectores Customizados",
-
-    // TODO
-    "config.custom-connectors.desc": "The items which connect adjacent machines together. You can specify either the internal English name (like \"Wood Path\") or qualified item ID (like \"(O)405\"), and list multiple items with commas.", // note: connector names must be English even when playing in other languages
+    "config.custom-connectors.desc": "Os itens que conectam as máquinas adjacentes. Especifique o internal English name (como \"Wood Path\") ou qualified item ID (como \"(O)405\"), e listar vários itens com vírgulas.", // note: connector names must be English even when playing in other languages
 
     // Junimo hut options
     "config.title.junimo-huts": "Comportamento das cabanas de Junimo",
