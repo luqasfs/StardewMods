@@ -2,8 +2,33 @@
 
 # Release notes
 ## Upcoming release
-* Added integration with Have More Kids (thanks to Mushymato!).
-* Fixed lookups for planted forage crop seeds not showing the item that will actually be produced.
+* When using the on-screen keyboard on the search menu, closing the keyboard now snaps back to the search box so navigation is more intuitive.
+* Improved the optional 'raw data' field:
+  * Friendship data is now extracted where applicable.
+  * List/dictionary values are now shown as multi-line lists for readability.
+* Improved input handling in search UI when search box is selected (thanks to khanshoaib3!).
+* Extended [custom menu conventional fields](author-guide.md#hovered-content-in-custom-menus) to support properties too (thanks to Mushymato!).
+* Fixed bush lookup error when Custom Bush reports no applicable seasons; the lookup will now show 'unknown' as the next harvest date in that case.
+* Fixed item lookups' fish spawn rules showing duplicate entries. These are now merged automatically.
+* Fixed item lookups' fish spawn locations not always sorted.
+* Fixed item/NPC lookup from a custom menu with an invalid field type.
+* Improved translations. Thanks to jjongleee (updated Korean)!
+
+## 1.55.0
+Released 14 March 2026 for SMAPI 4.3.1 or later.
+
+* You can now double-tap the screen on Android to look up whatever's under the tap (thanks to ferrles124!).
+* Improved performance when viewing lookups with a lot of information shown.
+* Lookup Anything downloads are now created via [automated and attested builds](https://www.patreon.com/posts/automated-builds-148417912).  
+  _This guarantees that the download only contains what's in the public source code and hasn't been tampered with._
+* Fixed item lookups for planted forage crop seeds not showing the item that will actually be produced.
+* Fixed item lookups' fish spawn rule checkboxes not accounting for...
+  - separate weather when fishing outside the valley;
+  - some custom mod weathers.
+* Fixed item lookups in Better Crafting UI not working for unknown recipes.
+* Fixed NPC lookups for children from Have More Kids (thanks to Mushymato!).
+* Fixed fruit tree lookups' portraits.
+* Improved translations. Thanks to MakinDay (updated Italian)!
 
 ## 1.54.0
 Released 11 January 2026 for SMAPI 4.3.1 or later.

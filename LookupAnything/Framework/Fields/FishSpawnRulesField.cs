@@ -43,7 +43,7 @@ internal class FishSpawnRulesField : CheckboxListField
         : this(label, FishSpawnRulesField.GetConditions(gameHelper, location, tile, fishAreaId, showUncaughtFishSpawnRules).ToArray()) { }
 
     /// <inheritdoc/>
-    public override Vector2? DrawValue(SpriteBatch spriteBatch, SpriteFont font, Vector2 position, float wrapWidth)
+    public override Vector2? DrawValue(SpriteBatch spriteBatch, SpriteFont font, Vector2 position, float wrapWidth, float visibleHeight)
     {
         float topOffset = 0;
         int hiddenSpawnRulesCount = 0;
@@ -51,15 +51,17 @@ internal class FishSpawnRulesField : CheckboxListField
         // draw checkbox lists
         foreach (CheckboxList checkboxList in this.CheckboxLists)
         {
+            if (topOffset > visibleHeight)
+                break;
+
             if (checkboxList.IsHidden)
                 hiddenSpawnRulesCount++;
             else
-                // draw checkbox list
-                topOffset += this.DrawCheckboxList(checkboxList, spriteBatch, font, new Vector2(position.X, position.Y + topOffset), wrapWidth).Y;
+                topOffset += this.DrawCheckboxList(checkboxList, spriteBatch, font, new Vector2(position.X, position.Y + topOffset), wrapWidth, visibleHeight).Y;
         }
 
         // draw 'X uncaught fish' message
-        if (hiddenSpawnRulesCount > 0)
+        if (hiddenSpawnRulesCount > 0 && topOffset < visibleHeight)
             topOffset += this.LineHeight + this.DrawIconText(spriteBatch, font, new Vector2(position.X, position.Y + topOffset), wrapWidth, I18n.Item_UncaughtFish(hiddenSpawnRulesCount), Color.Gray).Y;
 
         return new Vector2(wrapWidth, topOffset - this.LineHeight);
@@ -87,14 +89,30 @@ internal class FishSpawnRulesField : CheckboxListField
     /// <param name="showUncaughtFishSpawnRules">Whether to show spawn conditions for uncaught fish.</param>
     private static IEnumerable<CheckboxList> GetConditions(GameHelper gameHelper, GameLocation location, Vector2 tile, string fishAreaId, bool showUncaughtFishSpawnRules)
     {
+        HashSet<string> added = [];
+
         foreach (FishSpawnData spawnRules in gameHelper.GetFishSpawnRules(location, tile, fishAreaId))
         {
+            // parse item data
             ParsedItemData fishItemData = ItemRegistry.GetDataOrErrorItem(spawnRules.FishItem.QualifiedItemId);
             bool isCheckboxListHidden = !showUncaughtFishSpawnRules && !FishSpawnRulesField.HasPlayerCaughtFish(fishItemData);
+            Checkbox[] conditions = FishSpawnRulesField.GetConditions(gameHelper, fishItemData).ToArray();
 
-            CheckboxList checkboxList = new(FishSpawnRulesField.GetConditions(gameHelper, fishItemData), isCheckboxListHidden);
+            // skip duplicates
+            {
+                string textRepresentation =
+                    $"""
+                    {fishItemData.QualifiedItemId}
+                    -{string.Join("\n-", conditions.Select(checkbox => string.Join("", checkbox.Text.Select(p => p.Text))))}
+                    """;
+
+                if (!added.Add(textRepresentation))
+                    continue;
+            }
+
+            // add field
+            CheckboxList checkboxList = new(conditions, isCheckboxListHidden);
             checkboxList.AddIntro(fishItemData.DisplayName, new SpriteInfo(fishItemData.GetTexture(), fishItemData.GetSourceRect()));
-
             yield return checkboxList;
         }
     }
@@ -123,9 +141,9 @@ internal class FishSpawnRulesField : CheckboxListField
 
         // weather
         if (spawnRules.Weather == FishSpawnWeather.Sunny)
-            yield return FishSpawnRulesField.GetCondition(I18n.Item_FishSpawnRules_WeatherSunny(), !Game1.isRaining);
+            yield return FishSpawnRulesField.GetCondition(I18n.Item_FishSpawnRules_WeatherSunny(), !Game1.IsRainingHere());
         else if (spawnRules.Weather == FishSpawnWeather.Rainy)
-            yield return FishSpawnRulesField.GetCondition(I18n.Item_FishSpawnRules_WeatherRainy(), Game1.isRaining);
+            yield return FishSpawnRulesField.GetCondition(I18n.Item_FishSpawnRules_WeatherRainy(), Game1.IsRainingHere());
 
         // time of day
         if (spawnRules.TimesOfDay?.Any() == true)
@@ -164,7 +182,7 @@ internal class FishSpawnRulesField : CheckboxListField
             yield return FishSpawnRulesField.GetCondition(
                 label: I18n.Item_FishSpawnRules_Locations(
                     locations: I18n.List(
-                        spawnRules.Locations.Select(gameHelper.GetLocationDisplayName).OrderBy(p => p)
+                        spawnRules.Locations.Select(gameHelper.GetLocationDisplayName).OrderBy(p => p).Distinct()
                     )
                 ),
                 isMet: spawnRules.MatchesLocation(Game1.currentLocation.Name)
@@ -187,7 +205,7 @@ internal class FishSpawnRulesField : CheckboxListField
                 if (locationsBySeason.TryGetValue(season, out string[]? locationNames))
                 {
                     summary.Add(new FormattedText(
-                        text: Environment.NewLine + I18n.Item_FishSpawnRules_LocationsBySeason_SeasonLocations(season: gameHelper.TranslateSeason(season), locations: I18n.List(locationNames)),
+                        text: Environment.NewLine + I18n.Item_FishSpawnRules_LocationsBySeason_SeasonLocations(season: gameHelper.TranslateSeason(season), locations: I18n.List(locationNames.OrderBy(p => p).Distinct())),
                         color: season == Game1.currentSeason ? Color.Black : Color.Gray
                     ));
                 }

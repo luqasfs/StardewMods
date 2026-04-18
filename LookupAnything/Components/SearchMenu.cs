@@ -172,13 +172,16 @@ internal class SearchMenu : BaseMenu, IScrollableMenu, IDisposable
         // handle exit
         if (key == Keys.Escape)
         {
-            this.exitThisMenu();
+            if (this.SearchTextbox.Selected)
+                this.SearchTextbox.Selected = false; // deselect search box first, to allow for key navigation
+            else
+                this.exitThisMenu();
             return;
         }
 
         // handle controller navigation
         // (Controller snap navigation is sent as key presses; see 'receiveKeyPress' in Game1.updateActiveMenu.)
-        if (Game1.options.snappyMenus && Game1.options.gamepadControls && Game1.textEntry is null)
+        if (Game1.options.snappyMenus && Game1.options.gamepadControls && Game1.textEntry is null && !this.SearchTextbox.Selected)
         {
             bool isMovementKey =
                 Game1.options.doesInputListContain(Game1.options.moveUpButton, key)
@@ -283,10 +286,20 @@ internal class SearchMenu : BaseMenu, IScrollableMenu, IDisposable
 
         // handle on-screen keyboard
         bool keyboardOpen = Game1.textEntry is not null;
-        if (keyboardOpen != this.WasKeyboardOpen && this.currentlySnappedComponent?.myID == SearchBoxId)
+        if (keyboardOpen != this.WasKeyboardOpen)
         {
             if (!keyboardOpen)
-                this.StardewAccess.SayMenuElement(this.SearchTextboxClickableArea, interrupt: false); // already narrated if search text changed
+            {
+                // cursor was moved by keyboard menu, snap back to the search box so player can navigate down to results
+                if (this.currentlySnappedComponent?.myID != SearchBoxId)
+                {
+                    this.currentlySnappedComponent = this.SearchTextboxClickableArea;
+                    this.SnapToSelectedComponent = true;
+                }
+
+                // narrate instructions
+                this.StardewAccess.SayMenuElement(this.SearchTextboxClickableArea, interrupt: false);
+            }
 
             this.WasKeyboardOpen = keyboardOpen;
         }
@@ -451,11 +464,11 @@ internal class SearchMenu : BaseMenu, IScrollableMenu, IDisposable
     ** Protected methods
     *********/
     /// <inheritdoc />
-    protected override void customSnapBehavior(int direction, int oldRegion, int oldID)
+    protected override void customSnapBehavior(int direction, int oldRegion, int oldId)
     {
         // snap to next component
         ClickableComponent? prevSnapped = this.currentlySnappedComponent;
-        switch (oldID)
+        switch (oldId)
         {
             // from top-right close button
             case IClickableMenu.upperRightCloseButton_ID:
@@ -486,14 +499,14 @@ internal class SearchMenu : BaseMenu, IScrollableMenu, IDisposable
                 switch (direction)
                 {
                     case Game1.up:
-                        if (oldID == SearchMenu.FirstSearchResultId)
+                        if (oldId == SearchMenu.FirstSearchResultId)
                             this.setCurrentlySnappedComponentTo(SearchMenu.SearchBoxId);
                         else
-                            this.setCurrentlySnappedComponentTo(oldID - 1);
+                            this.setCurrentlySnappedComponentTo(oldId - 1);
                         break;
 
                     case Game1.down:
-                        this.setCurrentlySnappedComponentTo(oldID + 1);
+                        this.setCurrentlySnappedComponentTo(oldId + 1);
                         this.currentlySnappedComponent ??= this.SearchResults.Last();
                         break;
                 }

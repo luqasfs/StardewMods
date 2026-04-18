@@ -2,10 +2,18 @@
 
 # Release notes
 ## Upcoming release
+* Improved translations. Thanks to jjongleee (updated Korean)!
+
+## 1.23.0
+Released 14 March 2026 for SMAPI 4.1.10 or later.
+
 * The _Auto_ layer now chooses...
   * _Crops: Ready to Harvest_ when holding seeds or tea saplings;
   * _Fishing Depth_ when holding a fishing rod.
 * The _Crops: Ready to Harvest_ layer now highlights forage, grabbable spawns like quartz, and all tea bushes.
+* Data Layers downloads are now created via [automated and attested builds](https://www.patreon.com/posts/automated-builds-148417912).  
+  _This guarantees that the download only contains what's in the public source code and hasn't been tampered with._
+* Improved translations. Thanks to MakinDay (updated Italian)!
 
 ## 1.22.0
 Released 11 January 2026 for SMAPI 4.1.10 or later.
